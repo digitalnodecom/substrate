@@ -1,0 +1,38 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src
+
+    level: 5
+
+    ignoreErrors:
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::handle\(\)#'
+        # WordPress functions
+        - '#Function wp_[a-z_]+ not found#'
+        - '#Function get_[a-z_]+ not found#'
+        - '#Function add_[a-z_]+ not found#'
+        - '#Function do_[a-z_]+ not found#'
+        - '#Function apply_filters not found#'
+        - '#Function register_[a-z_]+ not found#'
+        # ACF functions
+        - '#Function acf_[a-z_]+ not found#'
+        # WooCommerce
+        - '#Function wc_[a-z_]+ not found#'
+        - '#Class WooCommerce not found#'
+        # WordPress classes
+        - '#Class WP_Query not found#'
+        - '#Class WP_User_Query not found#'
+        - '#Class WP_Block_Type_Registry not found#'
+        # WordPress globals
+        - '#Variable \$wpdb might not be defined#'
+        - '#Variable \$wp_version might not be defined#'
+        - '#Variable \$wp_filter might not be defined#'
+        - '#Variable \$wp_registered_widgets might not be defined#'
+        - '#Variable \$wp_registered_sidebars might not be defined#'
+        - '#Variable \$shortcode_tags might not be defined#'
+        # Constants
+        - '#Constant ACF_VERSION not found#'
+        - '#Constant WC_VERSION not found#'
+        - '#Constant WP_DEBUG not found#'
