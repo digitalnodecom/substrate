@@ -1,6 +1,11 @@
-# Substrate
+<p align="center">
+  <img src="icons/substrate-logo.png" alt="Substrate" width="400">
+</p>
 
-MCP server for WordPress + Bedrock + Acorn + Sage. Gives AI assistants deep context about your Roots stack.
+<p align="center">
+  MCP server for WordPress + Bedrock + Acorn + Sage.<br>
+  Gives AI assistants deep context about your Roots stack.
+</p>
 
 ## Quick Start
 
