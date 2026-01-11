@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icons/substrate-logo.png" alt="Substrate" width="400">
+  <img src="icons/substrate-logo.png" alt="Substrate" width="276">
 </p>
 
 <p align="center">
