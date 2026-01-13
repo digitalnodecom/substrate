@@ -11,6 +11,7 @@
 
 ```bash
 composer require digitalnodecom/substrate --dev
+wp acorn package:discover
 wp acorn substrate:install
 ```
 
