@@ -180,14 +180,55 @@ class ToolExecutor
      */
     protected function buildCommand(string $toolClass, array $arguments): array
     {
-        // Use Acorn's CLI to execute the tool from project root
-        // Base64 encode both to avoid shell escaping issues with backslashes
+        $encodedClass = base64_encode($toolClass);
+        $encodedArgs = base64_encode(json_encode($arguments));
+
+        // In a Bedrock/WordPress project, Acorn must be bootstrapped through
+        // WP-CLI (`wp acorn`) so that WordPress is loaded. Running
+        // `php vendor/bin/acorn` standalone does not boot WordPress, causing
+        // tools that depend on WP functions to produce empty output.
+        if ($this->shouldUseWpCli()) {
+            return [
+                $this->findWpCli(),
+                'acorn',
+                'substrate:execute-tool',
+                $encodedClass,
+                $encodedArgs,
+            ];
+        }
+
         return [
             PHP_BINARY,
             $this->projectRoot.'/vendor/bin/acorn',
             'substrate:execute-tool',
-            base64_encode($toolClass),
-            base64_encode(json_encode($arguments)),
+            $encodedClass,
+            $encodedArgs,
         ];
+    }
+
+    /**
+     * Determine if WP-CLI should be used to bootstrap the subprocess.
+     */
+    protected function shouldUseWpCli(): bool
+    {
+        return file_exists($this->projectRoot.'/wp-cli.yml')
+            || file_exists($this->projectRoot.'/wp-cli.local.yml')
+            || function_exists('add_action');
+    }
+
+    /**
+     * Find the WP-CLI binary path.
+     */
+    protected function findWpCli(): string
+    {
+        // Check common locations
+        foreach (['/opt/homebrew/bin/wp', '/usr/local/bin/wp', '/usr/bin/wp'] as $path) {
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        // Fall back to PATH resolution
+        return 'wp';
     }
 }
