@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Roots\Substrate\Mcp;
 
-use Dotenv\Dotenv;
-use Illuminate\Support\Env;
 use Laravel\Mcp\Response;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
@@ -98,23 +96,16 @@ class ToolExecutor
     /**
      * Get a clean environment for the subprocess.
      *
-     * @return array<string, mixed>
+     * Returning null inherits the parent process environment, allowing the
+     * subprocess to read .env via the Acorn bootstrap. Previously, all .env
+     * keys were set to false (unset), which stripped DB credentials and other
+     * vars needed for WordPress to boot — causing silent failures.
+     *
+     * @return array<string, mixed>|null
      */
-    protected function getCleanEnvironment(): array
+    protected function getCleanEnvironment(): ?array
     {
-        $envFile = $this->projectRoot.'/.env';
-
-        if (! file_exists($envFile)) {
-            return [];
-        }
-
-        $env = (Dotenv::create(
-            Env::getRepository(),
-            $this->projectRoot,
-            '.env'
-        ))->safeLoad();
-
-        return array_fill_keys(array_keys($env), false);
+        return null;
     }
 
     /**
