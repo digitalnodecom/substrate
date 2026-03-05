@@ -77,6 +77,15 @@ class ToolExecutor
             $output = $process->getOutput();
             $decoded = json_decode($output, true);
 
+            // If JSON decode fails, try to extract JSON from the output in case
+            // PHP notices/warnings were prepended before the JSON payload.
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $jsonStart = strpos($output, '{"');
+                if ($jsonStart !== false && $jsonStart > 0) {
+                    $decoded = json_decode(substr($output, $jsonStart), true);
+                }
+            }
+
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return Response::error('Invalid JSON output from tool process: '.json_last_error_msg());
             }

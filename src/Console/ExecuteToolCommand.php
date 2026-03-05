@@ -32,6 +32,10 @@ class ExecuteToolCommand extends Command
      */
     public function handle(): int
     {
+        // Capture any stray output (PHP notices/warnings/deprecations) so it
+        // doesn't corrupt the JSON we write to stdout.
+        ob_start();
+
         $toolClassEncoded = (string) $this->argument('tool');
         $argumentsEncoded = (string) $this->argument('arguments');
 
@@ -77,22 +81,22 @@ class ExecuteToolCommand extends Command
         } catch (Throwable $throwable) {
             $errorResult = Response::error("Tool execution failed (E_THROWABLE): {$throwable->getMessage()}");
 
-            echo json_encode([
+            $this->flushAndOutput(json_encode([
                 'isError' => true,
                 'content' => [
                     $errorResult->content()->toTool($tool),
                 ],
-            ]);
+            ]));
 
             return static::FAILURE;
         }
 
-        echo json_encode([
+        $this->flushAndOutput(json_encode([
             'isError' => $response->isError(),
             'content' => [
                 $response->content()->toTool($tool),
             ],
-        ]);
+        ]));
 
         return static::SUCCESS;
     }
@@ -102,11 +106,25 @@ class ExecuteToolCommand extends Command
      */
     protected function outputError(string $message): void
     {
-        echo json_encode([
+        $this->flushAndOutput(json_encode([
             'isError' => true,
             'content' => [
                 ['type' => 'text', 'text' => $message],
             ],
-        ]);
+        ]));
+    }
+
+    /**
+     * Discard any buffered output (PHP notices/warnings) and write clean data to stdout.
+     */
+    protected function flushAndOutput(string $json): void
+    {
+        $stray = ob_get_clean();
+
+        if ($stray !== false && $stray !== '') {
+            fwrite(STDERR, $stray);
+        }
+
+        echo $json;
     }
 }
