@@ -198,9 +198,9 @@ LOGO;
         $config = [
             'mcpServers' => [
                 'substrate' => [
-                    'command' => 'php',
+                    'command' => 'wp',
                     'args' => [
-                        'vendor/bin/acorn',
+                        'acorn',
                         'substrate:mcp',
                     ],
                 ],
@@ -237,8 +237,8 @@ LOGO;
             'mcp' => [
                 'servers' => [
                     'substrate' => [
-                        'command' => 'php',
-                        'args' => ['vendor/bin/acorn', 'substrate:mcp'],
+                        'command' => 'wp',
+                        'args' => ['acorn', 'substrate:mcp'],
                     ],
                 ],
             ],

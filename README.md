@@ -41,8 +41,8 @@ The installer creates `.mcp.json` automatically. Manual setup:
 {
   "mcpServers": {
     "substrate": {
-      "command": "php",
-      "args": ["vendor/bin/acorn", "substrate:mcp"]
+      "command": "wp",
+      "args": ["acorn", "substrate:mcp"]
     }
   }
 }
